@@ -1,10 +1,10 @@
 {
-  "name": "solidjs-template",
+  "name": "solidjs-tsdk-template",
   "private": true,
   "version": "0.0.2",
   "type": "module",
   "main": "index.js",
-  "homepage": "https://telegram-mini-apps.github.io/solidjs-template",
+  "homepage": "https://telegram-mini-apps.github.io/solidjs-tsdk-template",
   "scripts": {
     "deploy": "gh-pages -d dist",
     "dev": "vite",
