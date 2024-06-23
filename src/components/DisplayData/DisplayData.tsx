@@ -1,4 +1,3 @@
-import { isRGB, type RGB as RGBType } from '@tma.js/sdk-solid';
 import { type Component, For, type JSXElement, Match, Switch } from 'solid-js';
 
 import { RGB } from '@/components/RGB/RGB.js';
@@ -7,7 +6,7 @@ import './DisplayData.css';
 
 export interface DisplayDataRow {
   title: string;
-  value?: RGBType | string | boolean | JSXElement;
+  value?: string | boolean | JSXElement;
 }
 
 export interface DisplayDataProps {
@@ -23,7 +22,13 @@ export const DisplayData: Component<DisplayDataProps> = (props) => {
             <span class="display-data__line-title">{row.title}</span>
             <span class="display-data__line-value">
               <Switch fallback={row.value}>
-                <Match when={typeof row.value === 'string' && isRGB(row.value) ? row.value : false}>
+                <Match
+                  when={
+                    typeof row.value === 'string' && row.value.match(/^#[a-f0-9]{3,6}$/i)
+                      ? row.value
+                      : false
+                  }
+                >
                   {(color) => <RGB color={color()}/>}
                 </Match>
                 <Match when={row.value === false}>❌</Match>

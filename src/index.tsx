@@ -1,13 +1,9 @@
 /* @refresh reload */
 import { render } from 'solid-js/web';
 
-import './index.css';
-
 import { Root } from '@/components/Root.js';
 
-// Uncomment this import in case, you would like to develop the application even outside
-// the Telegram application, just in your browser.
-import './mockEnv.js';
+import './index.css';
 
 const root = document.getElementById('root');
 

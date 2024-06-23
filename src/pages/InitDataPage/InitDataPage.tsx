@@ -1,69 +1,75 @@
-import { retrieveLaunchParams, useInitData, type User } from '@tma.js/sdk-solid';
 import { createMemo, Show, type Component } from 'solid-js';
+import type { WebAppUser } from '@twa-dev/types';
 
 import { DisplayData, type DisplayDataRow } from '@/components/DisplayData/DisplayData.js';
 import { Link } from '@/components/Link/Link.js';
 import { Page } from '@/components/Page/Page.js';
 
 import './InitDataPage.css';
+import { getWebApp } from '@/utils/getWebApp.js';
 
-function getUserRows(user: User): DisplayDataRow[] {
+// TODO: @twa-dev/sdk is outdated, as well as @twa-dev/types.
+interface ExactWebAppUser extends WebAppUser {
+  allows_write_to_pm?: boolean;
+  added_to_attachment_menu?: boolean;
+}
+
+function getUserRows(user: ExactWebAppUser): DisplayDataRow[] {
   return [
     { title: 'id', value: user.id.toString() },
     { title: 'username', value: user.username },
-    { title: 'photo_url', value: user.photoUrl },
-    { title: 'last_name', value: user.lastName },
-    { title: 'first_name', value: user.firstName },
-    { title: 'is_bot', value: user.isBot },
-    { title: 'is_premium', value: user.isPremium },
-    { title: 'language_code', value: user.languageCode },
-    { title: 'allows_to_write_to_pm', value: user.allowsWriteToPm },
-    { title: 'added_to_attachment_menu', value: user.addedToAttachmentMenu },
+    { title: 'photo_url', value: user.photo_url },
+    { title: 'last_name', value: user.last_name },
+    { title: 'first_name', value: user.first_name },
+    { title: 'is_bot', value: user.is_bot },
+    { title: 'is_premium', value: user.is_premium },
+    { title: 'language_code', value: user.language_code },
+    { title: 'allows_to_write_to_pm', value: user.allows_write_to_pm },
+    { title: 'added_to_attachment_menu', value: user.added_to_attachment_menu },
   ];
 }
 
 export const InitDataPage: Component = () => {
-  const initData = useInitData();
-  const initDataRaw = retrieveLaunchParams().initDataRaw;
+  const {
+    initData: initDataRaw,
+    initDataUnsafe: initData,
+  } = getWebApp();
 
   const initDataRows = createMemo<DisplayDataRow[] | undefined>(() => {
-    const complete = initData();
-
-    return complete && initDataRaw
+    return initData && initDataRaw
       ? [
         { title: 'raw', value: initDataRaw },
-        { title: 'auth_date', value: complete.authDate.toLocaleString() },
-        { title: 'auth_date (raw)', value: complete.authDate.getTime() / 1000 },
-        { title: 'hash', value: complete.hash },
-        { title: 'can_send_after', value: complete.canSendAfterDate?.toISOString() },
-        { title: 'can_send_after (raw)', value: complete.canSendAfter },
-        { title: 'query_id', value: complete.queryId },
-        { title: 'start_param', value: complete.startParam },
-        { title: 'chat_type', value: complete.chatType },
-        { title: 'chat_instance', value: complete.chatInstance },
+        { title: 'auth_date', value: new Date(initData.auth_date * 1000).toLocaleString() },
+        { title: 'auth_date (raw)', value: initData.auth_date },
+        { title: 'hash', value: initData.hash },
+        { title: 'can_send_after', value: initData.can_send_after },
+        { title: 'query_id', value: initData.query_id },
+        { title: 'start_param', value: initData.start_param },
+        { title: 'chat_type', value: initData.chat_type },
+        { title: 'chat_instance', value: initData.chat_instance },
       ]
       : undefined;
   });
 
   const userRows = createMemo<DisplayDataRow[] | undefined>(() => {
-    const user = initData()?.user;
+    const { user } = initData;
     return user ? getUserRows(user) : undefined;
   });
 
   const receiverRows = createMemo<DisplayDataRow[] | undefined>(() => {
-    const receiver = initData()?.receiver;
+    const { receiver } = initData;
     return receiver ? getUserRows(receiver) : undefined;
   });
 
   const chatRows = createMemo<DisplayDataRow[] | undefined>(() => {
-    const chat = initData()?.chat;
+    const { chat } = initData;
     return chat
       ? [
         { title: 'id', value: chat.id.toString() },
         { title: 'title', value: chat.title },
         { title: 'type', value: chat.type },
         { title: 'username', value: chat.username },
-        { title: 'photo_url', value: chat.photoUrl },
+        { title: 'photo_url', value: chat.photo_url },
       ]
       : undefined;
   });
