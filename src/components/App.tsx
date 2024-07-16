@@ -5,7 +5,7 @@ import {
   useNavigate,
   type RouteSectionProps,
 } from '@solidjs/router';
-import { Component, createEffect, For, onCleanup } from 'solid-js';
+import { type Component, createEffect, For, onCleanup } from 'solid-js';
 
 import { routes } from '@/navigation/routes.js';
 import { getWebApp } from '@/utils/getWebApp.js';
@@ -39,7 +39,6 @@ export function App() {
   return (
     <HashRouter root={HashRouterRoot}>
       <Route path="/">
-        {/*<BackButtonManipulator/>*/}
         <For each={routes}>
           {(route) => <Route path={route.path} component={route.Component}/>}
         </For>
